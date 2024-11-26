@@ -1,5 +1,4 @@
 import sqlite3
-import textwrap
 
 con = sqlite3.connect('youtube_videos.db')
 
