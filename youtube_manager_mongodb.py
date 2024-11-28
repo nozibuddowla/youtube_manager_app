@@ -17,6 +17,15 @@ def get_next_serial_number():
         return last_video['serial_no'] + 1
     else:
         return 1
+    
+def reorder_serial_numbers():
+    videos = list(video_collection.find().sort('serial_no'))
+    for index, video in enumerate(videos, start=1):
+        video_collection.update_one(
+            {'_id': video['_id']},
+            {'$set': {'serial_no': index}}
+        )
+
 
 def add_video(name, time):
     serial_no = get_next_serial_number()
@@ -47,6 +56,7 @@ def delete_video(serial_no):
         result = video_collection.delete_one({'serial_no': serial_no})
         if result.deleted_count > 0:
             print(f"Video with Serial No: {serial_no} deleted.")
+            reorder_serial_numbers()
         else:
             print(f"No video found with Serial No: {serial_no}")
     except ValueError:
